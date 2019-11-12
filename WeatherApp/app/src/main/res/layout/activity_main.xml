@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/currentCityTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="－－"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/nowWeatherTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="－－"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/currentCityTextView" />
+
+    <TextView
+        android:id="@+id/nowTempTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="－－"
+        android:textSize="80sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nowWeatherTextView" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="°C"
+        android:textSize="60sp"
+        app:layout_constraintBottom_toBottomOf="@+id/nowTempTextView"
+        app:layout_constraintStart_toEndOf="@+id/nowTempTextView"
+        app:layout_constraintTop_toBottomOf="@+id/nowWeatherTextView" />
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nowTempTextView">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp">
+
+            <TextView
+                android:id="@+id/todayLabelTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="今天"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/todayWeatherTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="－－"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/todayTempLowTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="－－"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/todayTempHighTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="5dp"
+                android:text="－－"
+                app:layout_constraintEnd_toStartOf="@id/todayTempLowTextView"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tomorrowLabelTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="明天"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/todayLabelTextView" />
+
+            <TextView
+                android:id="@+id/tomorrowWeatherTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="－－"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/todayWeatherTextView" />
+
+            <TextView
+                android:id="@+id/tomorrowTempLowTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="－－"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/todayTempLowTextView" />
+
+            <TextView
+                android:id="@+id/tomorrowTempHighTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="5dp"
+                android:text="－－"
+                app:layout_constraintEnd_toStartOf="@id/tomorrowTempLowTextView"
+                app:layout_constraintTop_toBottomOf="@id/todayTempHighTextView" />
+
+            <TextView
+                android:id="@+id/afterTomorrowLabelTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="后天"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tomorrowLabelTextView" />
+
+            <TextView
+                android:id="@+id/afterTomorrowWeatherTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="－－"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tomorrowWeatherTextView" />
+
+            <TextView
+                android:id="@+id/afterTomorrowTempLowTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="－－"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tomorrowTempLowTextView" />
+
+            <TextView
+                android:id="@+id/afterTomorrowTempHighTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="5dp"
+                android:text="－－"
+                app:layout_constraintEnd_toStartOf="@id/afterTomorrowTempLowTextView"
+                app:layout_constraintTop_toBottomOf="@id/tomorrowTempHighTextView" />
+
+
+            <TextView
+                android:id="@+id/comfTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/afterTomorrowLabelTextView" />
+
+            <TextView
+                android:id="@+id/sunriseLabelTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="日出："
+                android:textAlignment="viewEnd"
+                android:textSize="15sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/sunriseTextView"
+                app:layout_constraintTop_toBottomOf="@id/comfTextView" />
+
+            <TextView
+                android:id="@+id/sunriseTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="-:-"
+                android:textSize="15sp"
+                app:layout_constraintLeft_toRightOf="@id/sunriseLabelTextView"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/sunriseLabelTextView" />
+
+            <TextView
+                android:id="@+id/sunsetLabelTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="日落："
+                android:textAlignment="viewEnd"
+                android:textSize="15sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/sunsetTextView"
+                app:layout_constraintTop_toBottomOf="@id/sunriseLabelTextView" />
+
+            <TextView
+                android:id="@+id/sunsetTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="-:-"
+                android:textSize="15sp"
+                app:layout_constraintLeft_toRightOf="@id/sunsetLabelTextView"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/sunsetLabelTextView" />
+
+            <TextView
+                android:id="@+id/popLabelTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="降水概率："
+                android:textAlignment="viewEnd"
+                android:textSize="15sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/popTextView"
+                app:layout_constraintTop_toBottomOf="@id/sunsetLabelTextView" />
+
+            <TextView
+                android:id="@+id/popTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="-:-"
+                android:textSize="15sp"
+                app:layout_constraintLeft_toRightOf="@id/popLabelTextView"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/popLabelTextView" />
+
+            <TextView
+                android:id="@+id/humLabelTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="湿度："
+                android:textAlignment="viewEnd"
+                android:textSize="15sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/humTextView"
+                app:layout_constraintTop_toBottomOf="@id/popLabelTextView" />
+
+            <TextView
+                android:id="@+id/humTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="-:-"
+                android:textSize="15sp"
+                app:layout_constraintLeft_toRightOf="@id/humLabelTextView"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/humLabelTextView" />
+
+            <TextView
+                android:id="@+id/windDirLabelTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="风向："
+                android:textAlignment="viewEnd"
+                android:textSize="15sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/windDirTextView"
+                app:layout_constraintTop_toBottomOf="@id/humLabelTextView" />
+
+            <TextView
+                android:id="@+id/windDirTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="-:-"
+                android:textSize="15sp"
+                app:layout_constraintLeft_toRightOf="@id/windDirLabelTextView"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/windDirLabelTextView" />
+
+            <TextView
+                android:id="@+id/windScLabelTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="风力："
+                android:textAlignment="viewEnd"
+                android:textSize="15sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/windScTextView"
+                app:layout_constraintTop_toBottomOf="@id/windDirLabelTextView" />
+
+            <TextView
+                android:id="@+id/windScTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="-:-"
+                android:textSize="15sp"
+                app:layout_constraintLeft_toRightOf="@id/windScLabelTextView"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/windScLabelTextView" />
+
+            <TextView
+                android:id="@+id/windSpdLabelTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="风速："
+                android:textAlignment="viewEnd"
+                android:textSize="15sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/windSpdTextView"
+                app:layout_constraintTop_toBottomOf="@id/windScLabelTextView" />
+
+            <TextView
+                android:id="@+id/windSpdTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="-:-"
+                android:textSize="15sp"
+                app:layout_constraintLeft_toRightOf="@id/windSpdLabelTextView"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/windSpdLabelTextView" />
+
+            <TextView
+                android:id="@+id/qltyLabelTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="空气质量类别："
+                android:textAlignment="viewEnd"
+                android:textSize="15sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/qltyTextView"
+                app:layout_constraintTop_toBottomOf="@id/windSpdLabelTextView" />
+
+            <TextView
+                android:id="@+id/qltyTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="-:-"
+                android:textSize="15sp"
+                app:layout_constraintLeft_toRightOf="@id/qltyLabelTextView"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/qltyLabelTextView" />
+
+            <TextView
+                android:id="@+id/aqiLabelTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="空气质量指数："
+                android:textAlignment="viewEnd"
+                android:textSize="15sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/aqiTextView"
+                app:layout_constraintTop_toBottomOf="@id/qltyLabelTextView" />
+
+            <TextView
+                android:id="@+id/aqiTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="-:-"
+                android:textSize="15sp"
+                app:layout_constraintLeft_toRightOf="@id/aqiLabelTextView"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/aqiLabelTextView" />
+
+            <TextView
+                android:id="@+id/pm25LabelTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="PM2.5："
+                android:textAlignment="viewEnd"
+                android:textSize="15sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/pm25TextView"
+                app:layout_constraintTop_toBottomOf="@id/aqiLabelTextView" />
+
+            <TextView
+                android:id="@+id/pm25TextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="-:-"
+                android:textSize="15sp"
+                app:layout_constraintLeft_toRightOf="@id/pm25LabelTextView"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/pm25LabelTextView" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
