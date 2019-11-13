@@ -1,9 +1,14 @@
 package cn.edu.hdu.weatherapp;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,11 +18,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,6 +49,10 @@ public class MainActivity extends AppCompatActivity {
     TextView qltyTextView;
     TextView aqiTextView;
     TextView pm25TextView;
+    private Button changeCityButton;
+
+    private SharedPreferences sharedPreferences;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,26 +83,54 @@ public class MainActivity extends AppCompatActivity {
         aqiTextView = findViewById(R.id.aqiTextView);
         pm25TextView = findViewById(R.id.pm25TextView);
 
+        changeCityButton = findViewById(R.id.changeCityButton);
+
+        sharedPreferences = getSharedPreferences("defaultCity", Context.MODE_PRIVATE);
+
+        changeCityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, CityChangeActivity.class);
+                startActivity(intent);
+                return;
+            }
+        });
+
+
         new Thread(new Runnable() {
             @Override
             public void run() {
                 HttpURLConnection conn = null;
                 try {
-                    String city = URLEncoder.encode("杭州", "utf-8");
-                    URL url = new URL("https://free-api.heweather.com/v5/weather?city="+city+"&key=f0420d78bd784bc7920d29e41bf1a239");
-                    conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestMethod("GET");
-                    InputStream input = conn.getInputStream();
-                    BufferedReader reader = new BufferedReader(new
-                            InputStreamReader(input));
-                    String strRead = null;
-                    StringBuilder sbf = new StringBuilder();
-                    while ((strRead = reader.readLine()) != null) {
-                        sbf.append(strRead);
-                        sbf.append(System.lineSeparator());
+                    String cityName = sharedPreferences.getString("cityName", "hangzhou");
+                    System.out.println(cityName);
+                    Weather weather = new Weather();
+
+                    URL urlWeatherNow = new URL("https://free-api.heweather.net/s6/weather/now?location=" + cityName + "&key=56c7111027ab4242874a3a2ff434328e");
+                    System.out.println(urlWeatherNow.toString());
+                    String dataWeatherNow = getWeatherData(urlWeatherNow);
+                    if (dataWeatherNow != null) {
+                        weather = parseWeatherNow(dataWeatherNow, weather);
                     }
-                    reader.close();
-                    Weather weather = parseWeatherResult(sbf.toString());
+                    URL urlWeatherForecast = new URL("https://free-api.heweather.net/s6/weather/forecast?location=" + cityName + "&key=56c7111027ab4242874a3a2ff434328e");
+                    String dataWeatherForecast =
+                            getWeatherData(urlWeatherForecast);
+                    if (dataWeatherForecast != null) {
+                        weather = parseWeatherForecast(dataWeatherForecast,
+                                weather);
+                    }
+                    URL urlWeatherLifestyle = new URL("https://free-api.heweather.net/s6/weather/lifestyle?location=" + cityName + "&key=56c7111027ab4242874a3a2ff434328e");
+                    String dataWeatherLifestyle =
+                            getWeatherData(urlWeatherLifestyle);
+                    if (dataWeatherLifestyle != null) {
+                        weather = parseWeatherLifestyle(dataWeatherLifestyle,
+                                weather);
+                    }
+                    URL urlAirNow = new URL("https://free-api.heweather.net/s6/air/now?location=" + cityName + "&key=56c7111027ab4242874a3a2ff434328e");
+                    String dataAirNow = getWeatherData(urlAirNow);
+                    if (dataAirNow != null) {
+                        weather = parseAirNow(dataAirNow, weather);
+                    }
                     Message msg = new Message();
                     msg.what = 1;
                     msg.obj = weather;
@@ -109,39 +146,121 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
-    private Weather parseWeatherResult(String jsonWeatherResult) {
-        Weather weather = new Weather();
+    private String getWeatherData(URL url) {
+        HttpURLConnection conn = null;
         try {
-            JSONArray root = new JSONObject(jsonWeatherResult).getJSONArray("HeWeather5");
-            JSONObject basicObj = root.getJSONObject(0).getJSONObject("basic");
-            JSONObject aqiObj = root.getJSONObject(0).getJSONObject("aqi");
-            JSONObject nowObj = root.getJSONObject(0).getJSONObject("now");
-            JSONArray forecastObj = root.getJSONObject(0).getJSONArray("daily_forecast");
-            JSONObject suggestionObj = root.getJSONObject(0).getJSONObject("suggestion");
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
 
-            weather.setCurrentCity(basicObj.getString("city"));
-            weather.setNowWeather(nowObj.getJSONObject("cond").getString("txt"));
+            InputStream input = conn.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+            String strRead = null;
+            StringBuilder sbf = new StringBuilder();
+            while ((strRead = reader.readLine()) != null) {
+                sbf.append(strRead);
+                sbf.append(System.lineSeparator());
+            }
+            reader.close();
+            return sbf.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 解析实况天气数据
+     *
+     * @param jsonWeatherNow
+     * @param weather
+     * @return
+     */
+    private Weather parseWeatherNow(String jsonWeatherNow, Weather weather) {
+        try {
+            JSONArray root = new JSONObject(jsonWeatherNow).getJSONArray("HeWeather6");
+            JSONObject basicObj = root.getJSONObject(0).getJSONObject("basic");
+            JSONObject nowObj = root.getJSONObject(0).getJSONObject("now");
+
+            weather.setCurrentCity(basicObj.getString("location"));
+            weather.setNowWeather(nowObj.getString("cond_txt"));
             weather.setNowTemp(nowObj.getString("tmp"));
-            weather.setTodayWeather(forecastObj.getJSONObject(0).getJSONObject("cond").getString("txt_d"));
-            weather.setTodayTempLow(forecastObj.getJSONObject(0).getJSONObject("tmp").getString("min"));
-            weather.setTodayTempHigh(forecastObj.getJSONObject(0).getJSONObject("tmp").getString("max"));
-            weather.setTomorrowWeather(forecastObj.getJSONObject(1).getJSONObject("cond").getString("txt_d"));
-            weather.setTomorrowTempLow(forecastObj.getJSONObject(1).getJSONObject("tmp").getString("min"));
-            weather.setTomorrowTempHigh(forecastObj.getJSONObject(1).getJSONObject("tmp").getString("max"));
-            weather.setAfterTomorrowWeather(forecastObj.getJSONObject(2).getJSONObject("cond").getString("txt_d"));
-            weather.setAfterTomorrowTempLow(forecastObj.getJSONObject(2).getJSONObject("tmp").getString("min"));
-            weather.setAfterTomorrowTempHigh(forecastObj.getJSONObject(2).getJSONObject("tmp").getString("max"));
-            weather.setComf(suggestionObj.getJSONObject("comf").getString("txt"));
-            weather.setSunrise(forecastObj.getJSONObject(0).getJSONObject("astro").getString("sr"));
-            weather.setSunset(forecastObj.getJSONObject(0).getJSONObject("astro").getString("ss"));
-            weather.setPop(forecastObj.getJSONObject(0).getString("pop") + "%");
             weather.setHum(nowObj.getString("hum") + "%");
-            weather.setWindDir(nowObj.getJSONObject("wind").getString("dir"));
-            weather.setWindSc(nowObj.getJSONObject("wind").getString("sc") + "级");
-            weather.setWindSpd(nowObj.getJSONObject("wind").getString("spd") + "kmph");
-            weather.setQlty(aqiObj.getJSONObject("city").getString("qlty"));
-            weather.setAqi(aqiObj.getJSONObject("city").getString("aqi"));
-            weather.setPm25(aqiObj.getJSONObject("city").getString("pm25") + "ug/m³");
+            weather.setWindDir(nowObj.getString("wind_dir"));
+            weather.setWindSc(nowObj.getString("wind_sc") + "级");
+            weather.setWindSpd(nowObj.getString("wind_spd") + "kmph");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return weather;
+    }
+
+    /**
+     * 解析天气预报数据
+     *
+     * @param jsonWeatherForecast
+     * @param weather
+     * @return
+     */
+    private Weather parseWeatherForecast(String jsonWeatherForecast, Weather weather) {
+        try {
+            JSONArray root = new JSONObject(jsonWeatherForecast).getJSONArray("HeWeather6");
+            JSONArray forecastObj = root.getJSONObject(0).getJSONArray("daily_forecast");
+
+            weather.setTodayWeather(forecastObj.getJSONObject(0).getString("cond_txt_d"));
+            weather.setTodayTempLow(forecastObj.getJSONObject(0).getString("tmp_min"));
+            weather.setTodayTempHigh(forecastObj.getJSONObject(0).getString("tmp_max"));
+            weather.setTomorrowWeather(forecastObj.getJSONObject(1).getString("cond_txt_d"));
+            weather.setTomorrowTempLow(forecastObj.getJSONObject(1).getString("tmp_min"));
+            weather.setTomorrowTempHigh(forecastObj.getJSONObject(1).getString("tmp_max"));
+            weather.setAfterTomorrowWeather(forecastObj.getJSONObject(2).getString("cond_txt_d"));
+            weather.setAfterTomorrowTempLow(forecastObj.getJSONObject(2).getString("tmp_min"));
+            weather.setAfterTomorrowTempHigh(forecastObj.getJSONObject(2).getString("tmp_max"));
+            weather.setSunrise(forecastObj.getJSONObject(0).getString("sr"));
+            weather.setSunset(forecastObj.getJSONObject(0).getString("ss"));
+            weather.setPop(forecastObj.getJSONObject(0).getString("pop") + "%");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return weather;
+    }
+
+    /**
+     * 解析生活指数数据
+     *
+     * @param jsonWeatherLifestyle
+     * @param weather
+     * @return
+     */
+    private Weather parseWeatherLifestyle(String jsonWeatherLifestyle, Weather weather) {
+        try {
+            JSONArray root = new JSONObject(jsonWeatherLifestyle).getJSONArray("HeWeather6");
+            JSONArray lifestyleObj = root.getJSONObject(0).getJSONArray("lifestyle");
+
+            weather.setComf(lifestyleObj.getJSONObject(0).getString("txt"));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return weather;
+    }
+
+    /**
+     * 解析空气质量数据
+     *
+     * @param jsonAirNow
+     * @param weather
+     * @return
+     */
+    private Weather parseAirNow(String jsonAirNow, Weather weather) {
+        try {
+            JSONArray root = new JSONObject(jsonAirNow).getJSONArray("HeWeather6");
+            JSONObject airObject = root.getJSONObject(0).getJSONObject("air_now_city");
+
+            weather.setQlty(airObject.getString("qlty"));
+            weather.setAqi(airObject.getString("aqi"));
+            weather.setPm25(airObject.getString("pm25") + "ug/m³");
         } catch (JSONException e) {
             e.printStackTrace();
         }
