@@ -23,6 +23,19 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.Buffer;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -53,11 +66,52 @@ public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPreferences;
 
+//    private String myCer = "-----BEGIN CERTIFICATE-----\n" +
+//            "MIIG9zCCBd+gAwIBAgIRAJGoxTDnpKfPu9tpFAwWiZ8wDQYJKoZIhvcNAQELBQAw\n" +
+//            "gZAxCzAJBgNVBAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAO\n" +
+//            "BgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMTYwNAYD\n" +
+//            "VQQDEy1DT01PRE8gUlNBIERvbWFpbiBWYWxpZGF0aW9uIFNlY3VyZSBTZXJ2ZXIg\n" +
+//            "Q0EwHhcNMTgxMTAxMDAwMDAwWhcNMjAxMDMxMjM1OTU5WjBeMSEwHwYDVQQLExhE\n" +
+//            "b21haW4gQ29udHJvbCBWYWxpZGF0ZWQxITAfBgNVBAsTGFBvc2l0aXZlU1NMIE11\n" +
+//            "bHRpLURvbWFpbjEWMBQGA1UEAxMNaGV3ZWF0aGVyLmNvbTCCASIwDQYJKoZIhvcN\n" +
+//            "AQEBBQADggEPADCCAQoCggEBANsOiIwzCLjZQPapbQxGUvtMQRUNT1/hc6FvAr0E\n" +
+//            "u1NArntJQ+7X90tCoAbH6sC4yBEOwYgBQMZepbyuFAA/8hbRhW1R2LA7T4zTvMTM\n" +
+//            "F25fIsJ25kOcbXuwnmnby89f8UsxPrWWuCJYEJ9ptk6ZJV89WPgHWGtCmCcqR/O1\n" +
+//            "jtSYhULdzR90F0OIeQKTBdeCb2nYJaAdQ8BOoOrOfkI/YPa3TICwmP8Hozr9+5zZ\n" +
+//            "wTIrGFUS62XsvX5FSIh7Qu/t6tfFuwauBbAftaSw11Lq6xhaZFcJb9l60Z+HXZ2I\n" +
+//            "7XRmuYA+nF/9A6XfXrITjJ2RSWzMOOTin5q4AXDNhL+ledsCAwEAAaOCA3swggN3\n" +
+//            "MB8GA1UdIwQYMBaAFJCvajqUWgvYkOoSVnPfQ7Q6KNrnMB0GA1UdDgQWBBSKr7b+\n" +
+//            "8aEadsVoGuecdwfeAW/hzjAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAd\n" +
+//            "BgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwTwYDVR0gBEgwRjA6BgsrBgEE\n" +
+//            "AbIxAQICBzArMCkGCCsGAQUFBwIBFh1odHRwczovL3NlY3VyZS5jb21vZG8uY29t\n" +
+//            "L0NQUzAIBgZngQwBAgEwVAYDVR0fBE0wSzBJoEegRYZDaHR0cDovL2NybC5jb21v\n" +
+//            "ZG9jYS5jb20vQ09NT0RPUlNBRG9tYWluVmFsaWRhdGlvblNlY3VyZVNlcnZlckNB\n" +
+//            "LmNybDCBhQYIKwYBBQUHAQEEeTB3ME8GCCsGAQUFBzAChkNodHRwOi8vY3J0LmNv\n" +
+//            "bW9kb2NhLmNvbS9DT01PRE9SU0FEb21haW5WYWxpZGF0aW9uU2VjdXJlU2VydmVy\n" +
+//            "Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wSgYD\n" +
+//            "VR0RBEMwQYINaGV3ZWF0aGVyLmNvbYIOKi5oZXdlYXRoZXIuY26CDyouaGV3ZWF0\n" +
+//            "aGVyLmNvbYIPKi5oZXdlYXRoZXIubmV0MIIBewYKKwYBBAHWeQIEAgSCAWsEggFn\n" +
+//            "AWUAdQDuS723dc5guuFCaR+r4Z5mow9+X7By2IMAxHuJeqj9ywAAAWbP7LvnAAAE\n" +
+//            "AwBGMEQCIDuw19H1pj+2YM0EWsGtS5eGTjRrFPHQQBfxy7o9d/RVAiApmQgycCoH\n" +
+//            "lIgd7sB3wj9Qm+kmDG3LW8XdCgQdFy7IUwB1AF6nc/nfVsDntTZIfdBJ4DJ6kZoM\n" +
+//            "hKESEoQYdZaBcUVYAAABZs/svBkAAAQDAEYwRAIgKzbuwnf44mhQmhs3dg4qDXTx\n" +
+//            "11TOt+pTSVXE9+Hm67MCIFh77glvKgdxnjG1UAD3qAmr4oYmM16Dz4/ba/9GFjpW\n" +
+//            "AHUA8JWkWfIA0YJAEC0vk4iOrUv+HUfjmeHQNKawqKqOsnMAAAFmz+y8MgAABAMA\n" +
+//            "RjBEAiBOMK5DUkrC9QEwogsEilPRSzcc3e74RRdMAh1nF6m0hgIgFNbNO8jEw0Op\n" +
+//            "LqfS6wPQQhGD2tARP6xAVIk7ewUp+cIwDQYJKoZIhvcNAQELBQADggEBAHLa78Ho\n" +
+//            "xYFy38v5SA9tfDIeKHsnFeJe9bLl5VGMx+v6A4PUwSiGch25YZJaJRD85M0mIZlb\n" +
+//            "aTrXHwdxA5N0xJwYzQMMD3cxfxGJjUMNMzFJxDZqFdWH53lnQJGPL3ah3DM/JhFF\n" +
+//            "oC0C0njJEVnEh2DN8fYEznXPuJHfN4iIswILrxTvYLM/cwiddgqJxPiLmpEkE6fJ\n" +
+//            "3H7W9Rao/+qmG32nhZUpkKqEnNYcj7XlmJsatz+CCPrucRQqnmIcAiBzqD8veq15\n" +
+//            "AYNhZUAS4+yrdWzOmKfh7V1VrQ1tMUm21lkWkvDDOLV+slPEAS9StagT48BRSny1\n" +
+//            "g9eq+11B3uxr6so=\n" +
+//            "-----END CERTIFICATE-----";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         currentCityTextView = findViewById(R.id.currentCityTextView);
         nowWeatherTextView = findViewById(R.id.nowWeatherTextView);
@@ -103,11 +157,11 @@ public class MainActivity extends AppCompatActivity {
                 HttpURLConnection conn = null;
                 try {
                     String cityName = sharedPreferences.getString("cityName", "hangzhou");
-                    System.out.println(cityName);
+//                    System.out.println(cityName);
                     Weather weather = new Weather();
 
                     URL urlWeatherNow = new URL("https://free-api.heweather.net/s6/weather/now?location=" + cityName + "&key=56c7111027ab4242874a3a2ff434328e");
-                    System.out.println(urlWeatherNow.toString());
+//                    System.out.println(urlWeatherNow.toString());
                     String dataWeatherNow = getWeatherData(urlWeatherNow);
                     if (dataWeatherNow != null) {
                         weather = parseWeatherNow(dataWeatherNow, weather);
@@ -151,6 +205,10 @@ public class MainActivity extends AppCompatActivity {
         try {
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
+            SSLContext sc = SSLContext.getInstance("TLS");
+            sc.init(null, new TrustManager[]{new MyTrustManager()}, new SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+            HttpsURLConnection.setDefaultHostnameVerifier(new MyHostnameVerifier());
 
             InputStream input = conn.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(input));
@@ -164,10 +222,42 @@ public class MainActivity extends AppCompatActivity {
             return sbf.toString();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
         }
         return null;
     }
 
+    private class MyHostnameVerifier implements HostnameVerifier {
+        @Override
+        public boolean verify(String hostname, SSLSession session) {
+            // TODO Auto-generated method stub
+            return true;
+        }
+
+    }
+
+    private class MyTrustManager implements X509TrustManager {
+        @Override
+        public void checkClientTrusted(X509Certificate[] chain, String authType)
+                throws CertificateException {
+            // TODO Auto-generated method stub
+        }
+        @Override
+        public void checkServerTrusted(X509Certificate[] chain, String authType)
+
+                throws CertificateException {
+            // TODO Auto-generated method stub
+        }
+        @Override
+        public X509Certificate[] getAcceptedIssuers() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+    }
     /**
      * 解析实况天气数据
      *
