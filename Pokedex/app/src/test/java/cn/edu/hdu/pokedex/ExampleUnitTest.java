@@ -1,4 +1,4 @@
-package cn.mooonkey.helloworld;
+package cn.edu.hdu.pokedex;
 
 import org.junit.Test;
 
