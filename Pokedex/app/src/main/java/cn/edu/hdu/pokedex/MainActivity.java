@@ -1,11 +1,14 @@
 package cn.edu.hdu.pokedex;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 
 import cn.edu.hdu.pokedex.models.Pokemon;
 import cn.edu.hdu.pokedex.models.PokemonResponse;
@@ -21,10 +24,20 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "POKEDEX";
     private Retrofit retrofit;
 
+    private RecyclerView recyclerView;
+    private ListPokemonAdapter listPokemonAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
+        listPokemonAdapter = new ListPokemonAdapter();
+        recyclerView.setAdapter(listPokemonAdapter);
+        recyclerView.setHasFixedSize(true);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
+        recyclerView.setLayoutManager(layoutManager);
 
         retrofit = new Retrofit.Builder()
                 .baseUrl("https://pokeapi.co/api/v2/")
@@ -46,10 +59,7 @@ public class MainActivity extends AppCompatActivity {
                     PokemonResponse pokemonResponse = response.body();
                     ArrayList<Pokemon> listPokemon = pokemonResponse.getResults();
 
-                    for (int i = 0; i < listPokemon.size(); i++) {
-                        Pokemon pokemon = listPokemon.get(i);
-                        Log.i(TAG, "Pokemon:" + pokemon.getName());
-                    }
+                    listPokemonAdapter.increaseListPokemon(listPokemon);
                 } else {
                     Log.e(TAG, "onResponse:" + response.errorBody());
                 }
