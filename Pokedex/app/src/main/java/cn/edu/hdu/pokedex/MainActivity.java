@@ -1,5 +1,6 @@
 package cn.edu.hdu.pokedex;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,34 +28,63 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ListPokemonAdapter listPokemonAdapter;
 
+    private int offset;
+
+    private boolean isLoad;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
-        listPokemonAdapter = new ListPokemonAdapter();
+        recyclerView = findViewById(R.id.recyclerView);
+        listPokemonAdapter = new ListPokemonAdapter(this);
         recyclerView.setAdapter(listPokemonAdapter);
         recyclerView.setHasFixedSize(true);
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
+        final GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                if (dy > 0) {
+                    int visibleItemCount = layoutManager.getChildCount();
+                    int totalItemCount = layoutManager.getItemCount();
+                    int pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
+
+                    if (isLoad) {
+                        if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                            Log.i(TAG, "End");
+
+                            isLoad = false;
+                            offset += 20;
+                            getData(offset);
+                        }
+                    }
+                }
+            }
+        });
 
         retrofit = new Retrofit.Builder()
                 .baseUrl("https://pokeapi.co/api/v2/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        getData();
+        isLoad = true;
+        offset = 0;
+        getData(offset);
     }
 
-    private void getData(){
+    private void getData(int offset){
         PokeapiService service = retrofit.create(PokeapiService.class);
-        Call<PokemonResponse> pokemonResponseCall = service.getListPokemon();
+        Call<PokemonResponse> pokemonResponseCall = service.getListPokemon(20,offset);
 
         pokemonResponseCall.enqueue(new Callback<PokemonResponse>() {
 
             @Override
             public void onResponse(Call<PokemonResponse> call, Response<PokemonResponse> response) {
+                isLoad = true;
                 if (response.isSuccessful()) {
                     PokemonResponse pokemonResponse = response.body();
                     ArrayList<Pokemon> listPokemon = pokemonResponse.getResults();
@@ -67,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<PokemonResponse> call, Throwable t) {
+                isLoad = true;
                 Log.e(TAG, "onFailure:" + t.getMessage());
             }
         });
