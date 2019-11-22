@@ -5,6 +5,10 @@ import java.util.ArrayList;
 public class PokemonResponse {
     private ArrayList<Pokemon> results;
 
+    private String name;
+    private ArrayList<Stat> stats;
+    private ArrayList types;
+
     public ArrayList<Pokemon> getResults() {
         return results;
     }
@@ -12,4 +16,29 @@ public class PokemonResponse {
     public void setResults(ArrayList<Pokemon> results) {
         this.results = results;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public ArrayList<Stat> getStats() {
+        return stats;
+    }
+
+    public void setStats(ArrayList<Stat> stats) {
+        this.stats = stats;
+    }
+
+    public ArrayList getTypes() {
+        return types;
+    }
+
+    public void setTypes(ArrayList types) {
+        this.types = types;
+    }
+
 }

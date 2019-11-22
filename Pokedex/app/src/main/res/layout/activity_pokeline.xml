@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PokelineActivity">
+
+    <ImageView
+        android:id="@+id/pokemonImg"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="100dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/pokemonName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="25dp"
+        android:textSize="25sp"
+        app:layout_constraintTop_toBottomOf="@+id/pokemonImg"
+        android:text="@string/app_name"
+        android:textAllCaps="true" />
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pokemonName">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp">
+
+            <TextView
+                android:id="@+id/speed"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="速度："
+                android:textSize="20sp"
+                android:textAlignment="viewEnd"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/speed_data"
+                app:layout_constraintTop_toTopOf="parent"
+                android:gravity="end" />
+
+            <TextView
+                android:id="@+id/speed_data"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text=" --"
+                android:textSize="20sp"
+                app:layout_constraintLeft_toRightOf="@+id/speed"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <TextView
+                android:id="@+id/special_defense"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="特防："
+                android:textSize="20sp"
+                android:textAlignment="viewEnd"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/special_defense_data"
+                app:layout_constraintTop_toBottomOf="@id/speed"
+                android:gravity="end" />
+
+            <TextView
+                android:id="@+id/special_defense_data"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text=" --"
+                android:textSize="20sp"
+                app:layout_constraintLeft_toRightOf="@+id/special_defense"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/speed_data" />
+
+
+            <TextView
+                android:id="@+id/special_attack"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="特攻："
+                android:textSize="20sp"
+                android:textAlignment="viewEnd"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/special_attack_data"
+                app:layout_constraintTop_toBottomOf="@id/special_defense"
+                android:gravity="end" />
+
+            <TextView
+                android:id="@+id/special_attack_data"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text=" --"
+                android:textSize="20sp"
+                app:layout_constraintLeft_toRightOf="@+id/special_attack"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/special_defense_data" />
+
+
+            <TextView
+                android:id="@+id/defense"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="防御："
+                android:textSize="20sp"
+                android:textAlignment="viewEnd"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/defense_data"
+                app:layout_constraintTop_toBottomOf="@id/special_attack"
+                android:gravity="end" />
+
+            <TextView
+                android:id="@+id/defense_data"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text=" --"
+                android:textSize="20sp"
+                app:layout_constraintLeft_toRightOf="@+id/defense"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/special_attack_data" />
+
+
+            <TextView
+                android:id="@+id/attack"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="攻击："
+                android:textSize="20sp"
+                android:textAlignment="viewEnd"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/attack_data"
+                app:layout_constraintTop_toBottomOf="@id/defense"
+                android:gravity="end" />
+
+            <TextView
+                android:id="@+id/attack_data"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text=" --"
+                android:textSize="20sp"
+                app:layout_constraintLeft_toRightOf="@+id/attack"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/defense_data" />
+
+
+            <TextView
+                android:id="@+id/hp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="体力："
+                android:textSize="20sp"
+                android:textAlignment="viewEnd"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/hp_data"
+                app:layout_constraintTop_toBottomOf="@id/attack"
+                android:gravity="end" />
+
+            <TextView
+                android:id="@+id/hp_data"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text=" --"
+                android:textSize="20sp"
+                app:layout_constraintLeft_toRightOf="@+id/hp"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/attack_data" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

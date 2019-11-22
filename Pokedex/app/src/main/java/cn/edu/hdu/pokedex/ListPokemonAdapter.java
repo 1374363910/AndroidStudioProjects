@@ -1,6 +1,8 @@
 package cn.edu.hdu.pokedex;
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +22,8 @@ import cn.edu.hdu.pokedex.models.Pokemon;
 
 public class ListPokemonAdapter extends RecyclerView.Adapter<ListPokemonAdapter.ViewHolder> {
 
+    private static final String TAG = "POKEDEX";
+
     private ArrayList<Pokemon> dataset;
     private Context context;
 
@@ -37,7 +41,7 @@ public class ListPokemonAdapter extends RecyclerView.Adapter<ListPokemonAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Pokemon pokemon = dataset.get(position);
+        final Pokemon pokemon = dataset.get(position);
         holder.pokemonName.setText(pokemon.getName());
 
         Glide.with(context)
@@ -46,6 +50,16 @@ public class ListPokemonAdapter extends RecyclerView.Adapter<ListPokemonAdapter.
                 .crossFade()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.pokemonPicture);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context,PokelineActivity.class);
+                Log.e(TAG, "传出数据：" + pokemon.getNumber());
+                intent.putExtra("id", pokemon.getNumber());
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
