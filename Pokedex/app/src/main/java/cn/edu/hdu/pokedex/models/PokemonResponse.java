@@ -7,7 +7,7 @@ public class PokemonResponse {
 
     private String name;
     private ArrayList<Stat> stats;
-    private ArrayList types;
+    private ArrayList<Type> types;
 
     public ArrayList<Pokemon> getResults() {
         return results;
@@ -33,12 +33,12 @@ public class PokemonResponse {
         this.stats = stats;
     }
 
-    public ArrayList getTypes() {
+
+    public ArrayList<Type> getTypes() {
         return types;
     }
 
-    public void setTypes(ArrayList types) {
+    public void setTypes(ArrayList<Type> types) {
         this.types = types;
     }
-
 }
